@@ -151,10 +151,17 @@ const setPromptInputText = (promptInputElement: HTMLElement, promptText: string)
     return;
   }
 
-  // For contenteditable, wrap each line in <p> elements to preserve them
+  // Normalize the prompt text for ChatGTP
   promptInputElement.innerHTML = promptText
-    .split('\n')
-    .map((line: string) => `<p>${escapeHtml(line) || '<br>'}</p>`)
+    .split('\n\n')
+    .map((paragraph: string) => {
+      const lines = paragraph
+        .split('\n')
+        .map((line: string) => escapeHtml(line))
+        .join('<br>');
+
+      return `<p>${lines || '<br>'}</p>`;
+    })
     .join('');
 
   promptInputElement.setAttribute('data-pg-processed', 'true');
