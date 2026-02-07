@@ -16,13 +16,14 @@ When you type a message in ChatGPT, PromptGuard attempts to detect sensitive inf
 
 ## How it works
 
-**Before sending:**
-```
-Your message: "My name is John Smith, email me at john@example.com"
-Sent to ChatGPT: "My name is [NAME_1], email me at [EMAIL_1]"
-```
+**What you type:**
 
-**In responses:**
+> My name is John Smith, email me at john@example.com
+
+**What ChatGPT receives:**
+
+> My name is [NAME_1], email me at [EMAIL_1]
+
 Placeholders appear as clickable green badges showing the original value.
 
 ## Installation
@@ -45,10 +46,10 @@ npm run lint         # Lint code
 npm run lint:fix     # Fix lint errors
 ```
 
-## Acknowledgments
+## Special thanks
 
 This project relies heavily on [Compromise.js](https://github.com/spencermountain/compromise) for natural language processing. A big thank you to Spencer Kelly and all the contributors for building such an accessible and powerful NLP library that made this extension possible.
 
 ## License
 
-MIT
+[MIT](LICENSE) - Copyright (c) 2026 Giacomo Trudu
