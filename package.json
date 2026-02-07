@@ -1,0 +1,37 @@
+{
+  "name": "prompt-guard",
+  "version": "1.0.0",
+  "description": "Protect your personal data while chatting with ChatGPT and other major AI platforms in your browser.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "prettify": "prettier --check \"**/*.{js,ts,json,html,css}\" --ignore-path .gitignore",
+    "prettify:fix": "prettier --write \"**/*.{js,ts,json,html,css}\" --ignore-path .gitignore"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.3.0",
+    "@types/chrome": "^0.0.287",
+    "@types/webextension-polyfill": "^0.12.1",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.4.11",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "compromise": "^14.14.5",
+    "fastest-levenshtein": "^1.0.16",
+    "libphonenumber-js": "^1.12.36",
+    "webextension-polyfill": "^0.12.0"
+  }
+}

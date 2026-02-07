@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PromptGuard</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>
+          <span class="icon">&#128737;</span>
+          PromptGuard
+        </h1>
+        <label class="toggle">
+          <input type="checkbox" id="statusToggle" checked />
+          <span class="slider"></span>
+        </label>
+      </header>
+
+      <main>
+        <div class="redaction-counter">
+          <span class="redaction-counter-value" id="redactionCount">0</span>
+          <span class="redaction-counter-label">Protected items in this chat</span>
+        </div>
+
+        <div class="chat-identifier">
+          <span class="chat-identifier-value" id="chatId"></span>
+        </div>
+      </main>
+
+      <footer>
+        <p>Protect your personal data while chatting with AI</p>
+      </footer>
+    </div>
+
+    <script type="module" src="popup.ts"></script>
+  </body>
+</html>

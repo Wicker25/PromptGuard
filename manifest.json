@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "PromptGuard",
+  "version": "1.0.0",
+  "description": "Protect your personal data while chatting with ChatGPT and other major AI platforms in your browser.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["*://chatgpt.com/*", "*://chat.openai.com/*"],
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://chatgpt.com/*", "*://chat.openai.com/*"],
+      "js": ["lib/compromise.min.js", "lib/detector.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "48": "icons/icon-48.png",
+      "96": "icons/icon-96.png"
+    }
+  },
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png"
+  }
+}
