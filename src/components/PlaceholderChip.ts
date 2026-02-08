@@ -87,8 +87,7 @@ const handleActionMenuBlur = (e: MouseEvent): void => {
 export function createPlaceholderChip(options: PlaceholderChipOptions): HTMLElement {
   const { placeholder, originalValue, piiType, isExcluded } = options;
 
-  const wrapperElement = document.createElement('div');
-  wrapperElement.style.display = 'inline-block';
+  const wrapperElement = document.createElement('span');
 
   const chipElement = document.createElement('span');
   chipElement.className = 'pg-placeholder-chip';
