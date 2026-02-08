@@ -16,15 +16,13 @@ When you type a message in ChatGPT, PromptGuard attempts to detect sensitive inf
 
 ## How it works
 
-**What you type:**
+**What you see:**
 
-> My name is John Smith, email me at john@example.com
+![What you see](docs/prompt-redacted.png)
 
-**What ChatGPT receives:**
+**What ChatGPT actually receives:**
 
-> My name is [NAME_1], email me at [EMAIL_1]
-
-Placeholders appear as clickable green badges showing the original value.
+![What ChatGPT actually receives](docs/prompt-real.png)
 
 ## Installation
 
