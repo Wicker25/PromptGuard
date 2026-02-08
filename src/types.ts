@@ -19,6 +19,7 @@ import {
   PII_NAME,
   PII_LOCATION,
   PII_ORGANIZATION,
+  PII_SECRET,
 } from './constants';
 
 export type ExtensionStatus = typeof EXTENSION_STATUS_ENABLED | typeof EXTENSION_STATUS_DISABLED;
@@ -32,7 +33,8 @@ export type PIIType =
   | typeof PII_ADDRESS
   | typeof PII_NAME
   | typeof PII_LOCATION
-  | typeof PII_ORGANIZATION;
+  | typeof PII_ORGANIZATION
+  | typeof PII_SECRET;
 
 export type PIIStatus = typeof PII_STATUS_PROTECTED | typeof PII_STATUS_EXCLUDED;
 

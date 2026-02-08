@@ -13,11 +13,13 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "prettify": "prettier --check \"**/*.{js,ts,json,html,css}\" --ignore-path .gitignore",
-    "prettify:fix": "prettier --write \"**/*.{js,ts,json,html,css}\" --ignore-path .gitignore"
+    "prettify:fix": "prettier --write \"**/*.{js,ts,json,html,css}\" --ignore-path .gitignore",
+    "patterns:refresh": "tsx scripts/generate-secret-patterns.ts"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.3.0",
     "@types/chrome": "^0.0.287",
+    "@types/node": "^25.2.2",
     "@types/webextension-polyfill": "^0.12.1",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
@@ -25,6 +27,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.8.1",
+    "smol-toml": "^1.3.1",
+    "tsx": "^4.19.2",
     "typescript": "^5.3.3",
     "vite": "^5.4.11",
     "vitest": "^4.0.18"

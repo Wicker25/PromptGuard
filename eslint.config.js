@@ -116,6 +116,14 @@ export default [
     },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', 'lib/**', 'content.js', 'background.js', 'popup/**'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'lib/**',
+      'content.js',
+      'background.js',
+      'popup/**',
+      'scripts/**',
+    ],
   },
 ];

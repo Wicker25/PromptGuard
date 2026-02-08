@@ -20,6 +20,7 @@ export const PII_ADDRESS = 'ADDRESS';
 export const PII_NAME = 'NAME';
 export const PII_LOCATION = 'LOCATION';
 export const PII_ORGANIZATION = 'ORGANIZATION';
+export const PII_SECRET = 'SECRET';
 
 export const PII_STATUS_PROTECTED = 'protected';
 export const PII_STATUS_EXCLUDED = 'excluded';

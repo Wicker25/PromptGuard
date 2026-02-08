@@ -48,7 +48,7 @@ npm run lint:fix     # Fix lint errors
 
 ## Special thanks
 
-This project relies heavily on [Compromise.js](https://github.com/spencermountain/compromise) for natural language processing. A big thank you to Spencer Kelly and all the contributors for building such an accessible and powerful NLP library that made this extension possible.
+This project relies heavily on [Compromise.js](https://github.com/spencermountain/compromise) and [Gitleaks](https://github.com/gitleaks/gitleaks) for natural language processing and comprehensive secret detection. A big thank you to Spencer Kelly, Zachary Rice, and all the contributors behind these projects for building such powerful tools and making this extension possible.
 
 ## License
 

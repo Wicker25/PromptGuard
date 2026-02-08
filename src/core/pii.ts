@@ -1,6 +1,7 @@
 import nlp from 'compromise';
 import { distance as levenshtein } from 'fastest-levenshtein';
 import { validatePhoneNumber, normalizePhoneNumber } from './phone';
+import { SECRET_PATTERNS } from './secrets';
 import type { PII, PIIType, Redactions, RedactionResult } from '../types';
 import {
   PII_EMAIL,
@@ -11,16 +12,17 @@ import {
   PII_NAME,
   PII_LOCATION,
   PII_ORGANIZATION,
+  PII_SECRET,
 } from '../constants';
 
-interface PatternRegex {
+interface PIIPattern {
   type: PIIType;
   regex: RegExp;
   validate?: (value: string) => boolean;
   normalize?: (value: string) => string;
 }
 
-const PATTERN_REGEXES: Record<string, PatternRegex> = {
+const PII_PATTERNS: Record<string, PIIPattern> = {
   email: {
     type: PII_EMAIL,
     regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
@@ -58,7 +60,7 @@ const PATTERN_REGEXES: Record<string, PatternRegex> = {
 };
 
 const normalizePattern = (value: string, type: PIIType): string => {
-  const patternRegex = Object.values(PATTERN_REGEXES).find(
+  const patternRegex = Object.values(PII_PATTERNS).find(
     (patternRegex) => patternRegex.type === type
   );
 
@@ -156,7 +158,7 @@ const detectPIIFromNLP = (text: string): PII[] => {
 export const detectPII = (text: string): PII[] => {
   const detectedPII: PII[] = [];
 
-  for (const pattern of Object.values(PATTERN_REGEXES)) {
+  for (const pattern of Object.values(PII_PATTERNS)) {
     const patternRegex = new RegExp(pattern.regex.source, pattern.regex.flags);
     let match: RegExpExecArray | null;
 
@@ -167,6 +169,26 @@ export const detectPII = (text: string): PII[] => {
       if (!pattern.validate || pattern.validate(value)) {
         detectedPII.push({ type: pattern.type, value, index });
       }
+    }
+  }
+
+  for (const pattern of SECRET_PATTERNS) {
+    let regex: RegExp;
+
+    try {
+      const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g';
+
+      regex = new RegExp(pattern.pattern, flags);
+    } catch {
+      continue;
+    }
+
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(text)) !== null) {
+      const value = match[0].trim();
+      const index = match.index + match[0].indexOf(value);
+      detectedPII.push({ type: PII_SECRET, value, index });
     }
   }
 
