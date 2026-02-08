@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" alt="PromptGuard" width="200">
+</p>
+
 # PromptGuard
 
 A simple browser extension that tries to help protect your personal data while chatting with ChatGPT and other AI platforms.
