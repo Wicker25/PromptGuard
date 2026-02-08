@@ -47,11 +47,11 @@ export interface Redaction {
   original: string;
 }
 
-export type RedactionMap = Record<string, Redaction>;
+export type Redactions = Record<string, Redaction>;
 
 export interface RedactionResult {
   detectedPII: PII[];
-  redactionMap: RedactionMap;
+  redactions: Redactions;
   redactedText: string;
 }
 
@@ -78,7 +78,7 @@ export interface MessageGetChatIdResponse {
 
 export interface MessageSetChatRedactionsRequest {
   type: typeof MESSAGE_SET_CHAT_REDACTIONS;
-  redactionMap: RedactionMap;
+  redactions: Redactions;
 }
 
 export interface MessageGetChatRedactionsRequest {
@@ -86,7 +86,7 @@ export interface MessageGetChatRedactionsRequest {
 }
 
 export interface MessageGetChatRedactionsResponse {
-  redactionMap: RedactionMap;
+  redactions: Redactions;
 }
 
 export interface MessageSetChatExcludedPIIRequest {

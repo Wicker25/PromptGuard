@@ -9,7 +9,7 @@ import {
   getChatExcludedPII,
   setChatExcludedPII,
 } from './messages';
-import { RedactionMap, MessageRequest, ExtensionStatus } from './types';
+import { Redactions, MessageRequest, ExtensionStatus } from './types';
 import {
   MESSAGE_SET_EXTENSION_STATUS,
   EXTENSION_STATUS_ENABLED,
@@ -69,18 +69,15 @@ const isExcludedPII = async (pii: string): Promise<boolean> => {
 };
 
 const redactPromptText = async (promptText: string): Promise<string> => {
-  const [redactionMap, excludedPII] = await Promise.all([
-    getChatRedactions(),
-    getChatExcludedPII(),
-  ]);
+  const [redactions, excludedPII] = await Promise.all([getChatRedactions(), getChatExcludedPII()]);
 
   const {
     detectedPII,
-    redactionMap: newRedactionMap,
+    redactions: newRedactions,
     redactedText,
-  } = await redactPII(promptText, redactionMap, excludedPII);
+  } = await redactPII(promptText, redactions, excludedPII);
 
-  await setChatRedactions(newRedactionMap);
+  await setChatRedactions(newRedactions);
 
   if (detectedPII.length > 0) {
     showNotification(`Protected ${detectedPII.length} personal data item(s).`);
@@ -251,9 +248,9 @@ const attachPromptSubmitHandler = (promptSubmitElement: HTMLButtonElement): void
   );
 };
 
-const restorePIIInTextNode = async (textNode: Text, redactionMap: RedactionMap): Promise<void> => {
+const restorePIIInTextNode = async (textNode: Text, redactions: Redactions): Promise<void> => {
   const text = textNode.textContent || '';
-  const matches = [...text.matchAll(/\[([A-Z_]+)_(\d+)\]/g)].filter((m) => redactionMap[m[0]]);
+  const matches = [...text.matchAll(/\[([A-Z_]+)_(\d+)\]/g)].filter((m) => redactions[m[0]]);
 
   if (matches.length === 0) {
     return;
@@ -264,7 +261,7 @@ const restorePIIInTextNode = async (textNode: Text, redactionMap: RedactionMap):
 
   for (const match of matches) {
     const placeholder = match[0];
-    const redaction = redactionMap[placeholder];
+    const redaction = redactions[placeholder];
 
     if (match.index! > lastIndex) {
       fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
@@ -300,7 +297,7 @@ const restorePIIInTextNode = async (textNode: Text, redactionMap: RedactionMap):
 
 const restorePIIInMessageElement = async (
   element: HTMLElement,
-  redactionMap: RedactionMap
+  redactions: Redactions
 ): Promise<void> => {
   const textNodes = findTextNodes(
     element,
@@ -308,21 +305,21 @@ const restorePIIInMessageElement = async (
   );
 
   for (const textNode of textNodes) {
-    await restorePIIInTextNode(textNode, redactionMap);
+    await restorePIIInTextNode(textNode, redactions);
   }
 };
 
 const restorePIIInMessages = async (): Promise<void> => {
-  const redactionMap = await getChatRedactions();
+  const redactions = await getChatRedactions();
 
-  if (Object.keys(redactionMap).length === 0) {
+  if (Object.keys(redactions).length === 0) {
     return;
   }
 
   const promptMessageElements = getPromptMessageElements();
 
   for (const promptMessageElement of promptMessageElements) {
-    await restorePIIInMessageElement(promptMessageElement, redactionMap);
+    await restorePIIInMessageElement(promptMessageElement, redactions);
   }
 };
 

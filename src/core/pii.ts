@@ -1,7 +1,7 @@
 import nlp from 'compromise';
 import { distance as levenshtein } from 'fastest-levenshtein';
 import { validatePhoneNumber, normalizePhoneNumber } from './phone';
-import type { PII, PIIType, RedactionMap, RedactionResult } from '../types';
+import type { PII, PIIType, Redactions, RedactionResult } from '../types';
 import {
   PII_EMAIL,
   PII_PHONE,
@@ -200,7 +200,7 @@ export const detectPII = (text: string): PII[] => {
  */
 export const redactPII = (
   text: string,
-  redactionMap: RedactionMap = {},
+  redactions: Redactions = {},
   excludedPII: string[] = []
 ): RedactionResult => {
   let detectedPII = detectPII(text);
@@ -212,9 +212,9 @@ export const redactPII = (
   }
 
   const counters: Record<string, number> = {};
-  const redactionMapCopy: RedactionMap = { ...redactionMap };
+  const redactionsCopy: Redactions = { ...redactions };
 
-  for (const placeholder of Object.keys(redactionMapCopy)) {
+  for (const placeholder of Object.keys(redactionsCopy)) {
     const match = placeholder.match(/\[([A-Z_]+)_(\d+)\]/);
 
     if (match) {
@@ -226,7 +226,7 @@ export const redactPII = (
 
   const placeholderLookup: Record<string, string> = {};
 
-  for (const [placeholder, redaction] of Object.entries(redactionMapCopy)) {
+  for (const [placeholder, redaction] of Object.entries(redactionsCopy)) {
     const lookupKey = normalizePattern(redaction.original, redaction.type);
     placeholderLookup[lookupKey] = placeholder;
   }
@@ -243,7 +243,7 @@ export const redactPII = (
 
       placeholder = `[${pii.type}_${counters[pii.type]}]`;
       placeholderLookup[lookupKey] = placeholder;
-      redactionMapCopy[placeholder] = { type: pii.type, original: pii.value };
+      redactionsCopy[placeholder] = { type: pii.type, original: pii.value };
     }
 
     const adjustedIndex = pii.index + offset;
@@ -255,5 +255,5 @@ export const redactPII = (
     offset += placeholder.length - pii.value.length;
   }
 
-  return { detectedPII, redactionMap: redactionMapCopy, redactedText };
+  return { detectedPII, redactions: redactionsCopy, redactedText };
 };

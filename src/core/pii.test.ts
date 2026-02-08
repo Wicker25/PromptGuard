@@ -259,7 +259,7 @@ describe('PII', () => {
 
     it('should create mappings for each detected item', () => {
       const result = redactPII('Email test@example.com');
-      expect(result.redactionMap['[EMAIL_1]']).toEqual({
+      expect(result.redactions['[EMAIL_1]']).toEqual({
         type: 'EMAIL',
         original: 'test@example.com',
       });
@@ -271,16 +271,16 @@ describe('PII', () => {
     });
 
     it('should use existing mappings', () => {
-      const redactionMap = {
+      const redactions = {
         '[EMAIL_1]': { type: 'EMAIL' as const, original: 'other@example.com' },
       };
-      const result = redactPII('Email test@example.com', redactionMap);
+      const result = redactPII('Email test@example.com', redactions);
       expect(result.redactedText).toContain('[EMAIL_2]');
     });
 
     it('should redact names from NLP', () => {
       const result = redactPII('Hello John Smith');
-      expect(result.redactionMap['[NAME_1]']?.original).toBe('John Smith');
+      expect(result.redactions['[NAME_1]']?.original).toBe('John Smith');
       expect(result.redactedText).toContain('[NAME_1]');
     });
 
@@ -298,7 +298,7 @@ describe('PII', () => {
 
       it('should use same placeholder for phone with and without country code', () => {
         const result = redactPII('US: +1-555-123-4567, local: 555-123-4567');
-        const phoneCount = Object.keys(result.redactionMap).filter((key) =>
+        const phoneCount = Object.keys(result.redactions).filter((key) =>
           key.startsWith('[PHONE_')
         ).length;
         expect(phoneCount).toBe(2); // +1 prefix makes them different normalized values
@@ -310,10 +310,10 @@ describe('PII', () => {
       });
 
       it('should reuse existing mapping for normalized phone number', () => {
-        const redactionMap = {
+        const redactions = {
           '[PHONE_1]': { type: 'PHONE' as const, original: '555-123-4567' },
         };
-        const result = redactPII('Call (555) 123-4567', redactionMap);
+        const result = redactPII('Call (555) 123-4567', redactions);
         expect(result.redactedText).toBe('Call [PHONE_1]');
       });
 

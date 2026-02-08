@@ -3,7 +3,7 @@ import type {
   MessageRequest,
   MessageGetExtensionStatusResponse,
   MessageSetExtensionStatusRequest,
-  RedactionMap,
+  Redactions,
 } from './types';
 import {
   EXTENSION_ICONS,
@@ -51,23 +51,23 @@ const fetchChatId = async (sender: Runtime.MessageSender): Promise<string> => {
   return 'pending';
 };
 
-const getChatRedactions = async (chatId: string): Promise<RedactionMap> => {
-  return (await getStorageValue<RedactionMap>(`chat_${chatId}`)) || {};
+const getChatRedactions = async (chatId: string): Promise<Redactions> => {
+  return (await getStorageValue<Redactions>(`chat_${chatId}`)) || {};
 };
 
-const setChatRedactions = async (chatId: string, redactionMap: RedactionMap): Promise<void> => {
-  await setStorageValue(`chat_${chatId}`, redactionMap);
+const setChatRedactions = async (chatId: string, redactions: Redactions): Promise<void> => {
+  await setStorageValue(`chat_${chatId}`, redactions);
 };
 
 const migratePendingChatRedactions = async (chatId: string): Promise<void> => {
-  const redactionMap = await getChatRedactions('pending');
+  const redactions = await getChatRedactions('pending');
   const excludedPII = await getChatExcludedPII('pending');
 
-  if (Object.keys(redactionMap).length === 0 && excludedPII.length === 0) {
+  if (Object.keys(redactions).length === 0 && excludedPII.length === 0) {
     return;
   }
 
-  await setChatRedactions(chatId, redactionMap);
+  await setChatRedactions(chatId, redactions);
   await setChatExcludedPII(chatId, excludedPII);
 
   await browser.storage.session.remove(['chat_pending', 'excludedPII_pending']);
@@ -147,13 +147,13 @@ const initialize = async (): Promise<void> => {
 
       case MESSAGE_SET_CHAT_REDACTIONS: {
         const chatId = await fetchChatId(sender);
-        await setChatRedactions(chatId, message.redactionMap);
+        await setChatRedactions(chatId, message.redactions);
         return;
       }
 
       case MESSAGE_GET_CHAT_REDACTIONS: {
         const chatId = await fetchChatId(sender);
-        return { redactionMap: await getChatRedactions(chatId) };
+        return { redactions: await getChatRedactions(chatId) };
       }
 
       case MESSAGE_SET_CHAT_EXCLUDED_PII: {

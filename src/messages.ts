@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import type {
   ExtensionStatus,
-  RedactionMap,
+  Redactions,
   MessageSetExtensionStatusRequest,
   MessageGetExtensionStatusRequest,
   MessageGetExtensionStatusResponse,
@@ -47,19 +47,19 @@ export const getChatId = async (): Promise<string> => {
   return response.chatId;
 };
 
-export const setChatRedactions = async (redactionMap: RedactionMap): Promise<void> => {
+export const setChatRedactions = async (redactions: Redactions): Promise<void> => {
   await browser.runtime.sendMessage({
     type: MESSAGE_SET_CHAT_REDACTIONS,
-    redactionMap,
+    redactions: redactions,
   } as MessageSetChatRedactionsRequest);
 };
 
-export const getChatRedactions = async (): Promise<RedactionMap> => {
+export const getChatRedactions = async (): Promise<Redactions> => {
   const response = (await browser.runtime.sendMessage({
     type: MESSAGE_GET_CHAT_REDACTIONS,
   } as MessageGetChatRedactionsRequest)) as MessageGetChatRedactionsResponse;
 
-  return response.redactionMap || {};
+  return response.redactions || {};
 };
 
 export const setChatExcludedPII = async (excludedPII: string[]): Promise<void> => {

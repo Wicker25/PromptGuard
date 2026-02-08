@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   const loadRedactionCount = async (): Promise<void> => {
-    const redactionMap = await getChatRedactions();
-    redactionCount.textContent = String(Object.keys(redactionMap).length);
+    const redactions = await getChatRedactions();
+    redactionCount.textContent = String(Object.keys(redactions).length);
   };
 
   statusToggle.addEventListener('change', async () => {
