@@ -42,7 +42,6 @@
   margin: 0 2px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
-  user-select: none;
   white-space: nowrap;
 }
 
@@ -64,6 +63,7 @@
   content: '🔒';
   margin-right: 4px;
   font-size: 0.85em;
+  user-select: none;
 }
 
 .pg-placeholder-chip.pg-excluded::before {
@@ -75,6 +75,7 @@
   opacity: 0.85;
   margin-left: 4px;
   text-transform: uppercase;
+  user-select: none;
 }
 
 .pg-action-menu {

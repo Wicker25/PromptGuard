@@ -354,6 +354,120 @@ const restorePIIInMessages = async (): Promise<void> => {
   }
 };
 
+const isTextSelectionRedacted = (selection: Selection): boolean => {
+  for (let i = 0; i < selection.rangeCount; i++) {
+    const textRange = selection.getRangeAt(i);
+    const commonAncestorContainer = textRange.commonAncestorContainer;
+
+    const containerElement =
+      commonAncestorContainer.nodeType === Node.ELEMENT_NODE
+        ? (commonAncestorContainer as Element)
+        : commonAncestorContainer.parentElement;
+
+    if (!containerElement) {
+      continue;
+    }
+
+    const containsRedactedText =
+      containerElement.querySelectorAll('.pg-placeholder-chip').length > 0 ||
+      containerElement.closest('.pg-placeholder-chip') !== null;
+
+    if (containsRedactedText) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const restorePIIInTextRange = (element: Element, range: Range): string => {
+  let restoredText = '';
+
+  const isNodeInRange = (node: Node): boolean => {
+    try {
+      return range.intersectsNode(node);
+    } catch {
+      return false;
+    }
+  };
+
+  const processNode = (node: Node): void => {
+    if (!isNodeInRange(node)) {
+      return;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const elementNode = node as Element;
+
+      if (elementNode.classList.contains('pg-placeholder-chip')) {
+        const originalValue = elementNode.getAttribute('data-pg-original');
+
+        if (originalValue) {
+          restoredText += originalValue;
+        }
+
+        return;
+      }
+
+      node.childNodes.forEach(processNode);
+    } else if (node.nodeType === Node.TEXT_NODE) {
+      if ((node.parentElement as Element)?.closest('.pg-placeholder-chip')) {
+        return;
+      }
+
+      const textContent = node.textContent || '';
+
+      if (node === range.startContainer && node === range.endContainer) {
+        restoredText += textContent.substring(range.startOffset, range.endOffset);
+      } else if (node === range.startContainer) {
+        restoredText += textContent.substring(range.startOffset);
+      } else if (node === range.endContainer) {
+        restoredText += textContent.substring(0, range.endOffset);
+      } else {
+        restoredText += textContent;
+      }
+    }
+  };
+
+  processNode(element);
+
+  return restoredText;
+};
+
+const handleRedactedTextCopy = (event: ClipboardEvent): void => {
+  const textSelection = window.getSelection();
+
+  if (!textSelection || textSelection.rangeCount === 0) {
+    return;
+  }
+
+  if (!isTextSelectionRedacted(textSelection)) {
+    return;
+  }
+
+  let restoredText = '';
+
+  for (let i = 0; i < textSelection.rangeCount; i++) {
+    const textRange = textSelection.getRangeAt(i);
+    const commonAncestor = textRange.commonAncestorContainer;
+    const containerElement =
+      commonAncestor.nodeType === Node.ELEMENT_NODE
+        ? (commonAncestor as Element)
+        : commonAncestor.parentElement;
+
+    if (containerElement) {
+      restoredText += restorePIIInTextRange(containerElement, textRange);
+    }
+  }
+
+  event.clipboardData?.setData('text/plain', restoredText);
+  event.preventDefault();
+};
+
+const attachRedactedTextCopyHandler = (): void => {
+  document.addEventListener('copy', handleRedactedTextCopy, true);
+};
+
 const initialize = async (): Promise<void> => {
   let promptInputElement = await waitForElement(getPromptInputElement);
   let promptSubmitElement = await waitForElement(getPromptSubmitElement);
@@ -362,9 +476,8 @@ const initialize = async (): Promise<void> => {
   attachPromptSubmitHandler(promptSubmitElement);
 
   initializePlaceholderChip();
+  attachRedactedTextCopyHandler();
 
-  // Reconnect the elements whenever the DOM changes and ensure the redacted PII is automatically
-  // restored on the page
   let restoreTimeout: number | null = null;
 
   const mutationObserver = new MutationObserver(() => {
