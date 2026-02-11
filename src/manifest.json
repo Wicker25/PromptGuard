@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PromptGuard",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Protect your personal data while chatting with ChatGPT and other major AI platforms in your browser.",
   "permissions": ["activeTab", "storage"],
   "host_permissions": ["*://chatgpt.com/*", "*://chat.openai.com/*"],

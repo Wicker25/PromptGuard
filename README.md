@@ -6,6 +6,14 @@
 
 A simple browser extension that tries to help protect your personal data while chatting with ChatGPT and other AI platforms.
 
+## Installation
+
+Install from your browser's extension marketplace:
+
+- [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/promptguard/)
+- [Chrome Web Store](https://chromewebstore.google.com/detail/promptguard/nipnolkplmnhpjmccopnfkldhmllaped)
+- [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/promptguard/abeojonkjhjmdampjpdomjhoamkpooce)
+
 ## What it does
 
 When you type a message in ChatGPT, PromptGuard attempts to detect sensitive information like email addresses, phone numbers, names, and API keys, and replaces them with placeholders before your message is sent. The original values are restored visually in the chat so you can still read your conversation naturally.
@@ -34,7 +42,7 @@ PromptGuard intercepts your message before it's sent, replaces any detected sens
 
 - ChatGPT
 
-## Installation
+## Development Installation
 
 1. Clone this repository
 2. Run `npm install`
